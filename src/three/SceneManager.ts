@@ -5,6 +5,7 @@ import { OutlinePass } from 'three/examples/jsm/postprocessing/OutlinePass.js';
 import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js';
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 import { CameraManager } from './CameraManager';
+import type { ModelDefinition } from '../data/models/registry';
 
 export class SceneManager {
   scene = new THREE.Scene(); renderer: THREE.WebGLRenderer; camera: CameraManager;
@@ -13,14 +14,14 @@ export class SceneManager {
   onFrame?: (delta:number)=>void; onStats?: (fps:number,calls:number,triangles:number)=>void;
   onResize?:()=>void;
   private frames=0;private elapsed=0;
-  constructor(private host: HTMLElement) {
+  constructor(private host: HTMLElement, model: ModelDefinition) {
     this.renderer=new THREE.WebGLRenderer({alpha:true,antialias:true,powerPreference:'high-performance'});
     this.renderer.setPixelRatio(Math.min(devicePixelRatio,innerWidth<768?1.25:1.75));
     this.renderer.toneMapping=THREE.ACESFilmicToneMapping;this.renderer.toneMappingExposure=.9;
     this.renderer.info.autoReset=false;
     this.renderer.localClippingEnabled=true;this.renderer.setClearColor(0x06101f,0);
     this.renderer.domElement.setAttribute('aria-label','风机三维模型，拖动旋转，滚轮缩放');
-    host.appendChild(this.renderer.domElement);this.camera=new CameraManager(this.renderer.domElement);
+    host.appendChild(this.renderer.domElement);this.camera=new CameraManager(this.renderer.domElement,model);
     const pmrem=new THREE.PMREMGenerator(this.renderer), room=new RoomEnvironment();
     this.environment=pmrem.fromScene(room,.04);this.scene.environment=this.environment.texture;this.scene.environmentIntensity=.55;room.dispose();pmrem.dispose();
     this.scene.add(new THREE.HemisphereLight(0xc8eaff,0x243951,.65));

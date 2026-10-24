@@ -1,16 +1,17 @@
 <script setup lang="ts">
 import {computed} from 'vue';import {ArrowUpRight,Focus,Scan,Info,Zap,MoveHorizontal,MoveVertical,Wind} from '@lucide/vue';
-import {componentMap} from '../data/components';import {turbine,displayModelName} from '../data/turbine';
-const props=defineProps<{selected:string;isolated:boolean;ready:boolean}>();
+import {componentMapOf,type ModelDefinition} from '../data/models/registry';
+const props=defineProps<{model:ModelDefinition;selected:string;isolated:boolean;ready:boolean}>();
 const emit=defineEmits<{focus:[];isolate:[];internals:[]}>();
-const current=computed(()=>componentMap.get(props.selected)!);
+const componentMap=computed(()=>componentMapOf(props.model));
+const current=computed(()=>componentMap.value.get(props.selected)!);
 </script>
 <template><aside class="info-panel">
- <section class="model-card panel"><Wind :size="42" :stroke-width="1.2"/><div><span class="info-kicker">WIND ENERGY / DIGITAL TWIN</span><h1>{{displayModelName}}</h1><p>陆上风力发电机 · 数字样机</p></div></section>
+ <section class="model-card panel"><Wind :size="42" :stroke-width="1.2"/><div><span class="info-kicker">WIND ENERGY / DIGITAL TWIN</span><h1>{{model.name}}</h1><p>{{model.subtitle}}</p></div></section>
  <section class="metrics-card panel" aria-label="整机参数"><dl>
-  <div><dt><Zap :size="19"/>额定功率</dt><dd>{{turbine.rated_power_mw}} <small>MW</small></dd></div>
-  <div><dt><MoveHorizontal :size="19"/>转子直径</dt><dd>{{turbine.rotor_diameter_m}} <small>m</small></dd></div>
-  <div><dt><MoveVertical :size="19"/>轮毂高度</dt><dd>{{turbine.hub_height_m}} <small>m</small></dd></div>
+  <div><dt><Zap :size="19"/>额定功率</dt><dd>{{model.turbineConfig.rated_power_mw}} <small>MW</small></dd></div>
+  <div><dt><MoveHorizontal :size="19"/>转子直径</dt><dd>{{model.turbineConfig.rotor_diameter_m}} <small>m</small></dd></div>
+  <div><dt><MoveVertical :size="19"/>轮毂高度</dt><dd>{{model.turbineConfig.hub_height_m}} <small>m</small></dd></div>
  </dl></section>
  <slot name="structure"/>
  <section class="detail-card panel">

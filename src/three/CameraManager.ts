@@ -1,12 +1,12 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import gsap from 'gsap';
-import {turbine} from '../data/turbine';
+import type { ModelDefinition } from '../data/models/registry';
 
 export class CameraManager {
   camera = new THREE.PerspectiveCamera(34,1,.05,4000);
   controls: OrbitControls;
-  constructor(canvas: HTMLCanvasElement) {
+  constructor(canvas: HTMLCanvasElement, private model: ModelDefinition) {
     this.controls=new OrbitControls(this.camera,canvas);
     this.controls.enableDamping=true;this.controls.dampingFactor=.075;
     this.controls.minDistance=.8;this.controls.maxDistance=1500;
@@ -19,9 +19,10 @@ export class CameraManager {
     if(box.isEmpty()) return;
     // Fit the complete swept disk, not the current three-blade pose. This keeps
     // the 2x autoplay tips on screen at every rotor angle and viewport size.
-    if(whole){
-      const rotor=object.getObjectByName('Rotor');
-      if(rotor){const hub=rotor.getWorldPosition(new THREE.Vector3()),radius=turbine.rotor_diameter_m/2;
+    if(whole&&this.model.features.sweptDiskFraming&&this.model.rotorComponentId){
+      const rotorName=this.model.components.find(c=>c.id===this.model.rotorComponentId)?.objectNames[0];
+      const rotor=rotorName?object.getObjectByName(rotorName):undefined;
+      if(rotor){const hub=rotor.getWorldPosition(new THREE.Vector3()),radius=this.model.turbineConfig.rotor_diameter_m/2;
         box.expandByPoint(new THREE.Vector3(hub.x,hub.y+radius,hub.z+radius));
         box.expandByPoint(new THREE.Vector3(hub.x,hub.y-radius,hub.z-radius));
       }

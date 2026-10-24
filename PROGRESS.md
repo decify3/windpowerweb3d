@@ -14,11 +14,34 @@
 | 依赖安装（npm install） | ✅ 完成 |
 | 模型检查（check:model，三档 LOD） | ✅ 全部通过 |
 | 生产构建（vue-tsc + vite build） | ✅ 通过 |
-| Playwright 自动化测试（Edge 无头） | ✅ 10/10 通过（修复 1 处原测试遗漏） |
-| 浏览器视觉复核（桌面/移动/X-Ray/拆解） | ✅ 通过 |
-| 公网部署 | ⏳ 进行中（见下文） |
-| 扩展架构准备 | ⏳ 进行中 |
-| Blender 4.2 便携版 | ⏳ 下载中 |
+| Playwright 自动化测试（Edge 无头） | ✅ 本地 dev 10/10 · 生产 preview 10/10 |
+| 依赖安全升级 | ✅ vue 3.5.44 / vite 8.3.5，npm audit 清零 |
+| **公网部署（GitHub Pages）** | ✅ **https://decify3.github.io/windpowerweb3d/ 10/10 通过** |
+| GitHub 仓库 | ✅ https://github.com/decify3/windpowerweb3d |
+| CI/CD 自动部署 | ✅ 推送 main 自动构建发布（Actions） |
+| 扩展架构（模型注册表） | ✅ 完成，回归测试 10/10 |
+| Blender 4.2 便携版 | ⏳ 见下文 |
+
+## 公网部署（已完成）
+
+- 仓库：`https://github.com/decify3/windpowerweb3d`（Public，Apache-2.0，保留原作者提交历史）
+- 线上地址：`https://decify3.github.io/windpowerweb3d/`
+- 部署方式：`.github/workflows/deploy-pages.yml`，推送 main 自动构建（VITE_BASE=/<仓库名>/）并发布到 GitHub Pages
+- 验证：全部 10 项 Playwright 测试在公网地址通过（54.7s）；实拍截图 `docs/live-deployment.png`（66 FPS / 88 网格 / WebGL 2）
+- 使用的本机配置：git 已配置仅针对 github.com 的本地代理 `http://127.0.0.1:7897`（系统代理直连 GitHub 不稳定；`git config --global --unset http.https://github.com/.proxy` 可撤销）
+- 完整部署文档（含 Cloudflare Pages / Nginx / 个人网站集成）：`docs/DEPLOYMENT.md`
+
+## 扩展架构（已完成，2026-10-25）
+
+- 新增 `src/data/models/registry.ts`：`ModelDefinition` 统一模型定义（名称/GLB/参数/部件/行为开关/拆解规则）
+- 参数化改造（默认 EN182 行为零变化，回归 10/10 通过）：
+  - `ModelHierarchy(root, components)`、`ExplodedView(hierarchy, components, rule)`、
+    `CameraManager(canvas, model)`、`SceneManager(host, model)`、`AnimationManager(rotor, initialSpeed)`
+  - `InfoPanel`/`ComponentTree`/`TreeNode` 改为 props 注入部件数据
+  - `TurbineViewer` 新增 `modelId` prop，按注册表加载；`App.vue` 传入模型定义
+- 模型选择器：`modelRegistry.length > 1` 时自动出现在右上角（当前单模型隐藏）
+- 行为开关：`rotorSpin` / `stagedExplosion` / `sweptDiskFraming` / `stageDisk` / `internalsComponentId`，未来基础/海洋结构模型可关闭风机专属行为
+- 接入指南：`docs/EXTENDING.md`（四步接入新模型，无需改渲染代码）
 
 ## 已完成工作
 

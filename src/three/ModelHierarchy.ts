@@ -1,9 +1,9 @@
 import * as THREE from 'three';
-import { components } from '../data/components';
+import type { ComponentDefinition } from '../data/components';
 export class ModelHierarchy {
   objects = new Map<string,THREE.Object3D>();
   hidden = new Set<string>(); isolated: string|null=null;
-  constructor(public root:THREE.Object3D){
+  constructor(public root:THREE.Object3D, components: ComponentDefinition[]){
     for(const c of components){const object=root.getObjectByName(c.objectNames[0]);if(!object)throw Error('模型缺少必需部件：'+c.objectNames[0]);object.userData.componentId=c.id;this.objects.set(c.id,object);}
   }
   get(id:string){return this.objects.get(id)!;}

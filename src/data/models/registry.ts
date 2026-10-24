@@ -40,6 +40,8 @@ export interface ModelDefinition {
   rootComponentId: string;
   /** 可旋转叶轮的部件 id；无叶轮模型留空 */
   rotorComponentId?: string;
+  /** "结构探索"按钮聚焦的内部系统部件 id（风机为机舱；无则隐藏该入口） */
+  internalsComponentId?: string;
   /** 初始叶轮演示倍率 */
   initialRotorSpeed: number;
   /** 模型物理参数（原 en182_config.json），供取景与参数卡片使用 */
@@ -72,6 +74,7 @@ const en182Model: ModelDefinition = {
   revision: '01.00',
   rootComponentId: 'turbine',
   rotorComponentId: 'rotor',
+  internalsComponentId: 'nacelle',
   initialRotorSpeed: 2,
   turbineConfig: en182Config,
   components: en182Components,
