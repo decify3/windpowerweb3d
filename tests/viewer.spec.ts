@@ -3,8 +3,9 @@ import {appendFileSync,writeFileSync} from 'node:fs';
 import {PerspectiveCamera,Vector3} from 'three';
 type Snapshot={selected:string;mode:string;level:number;lod:number;hidden:string[];isolated:string|null;rotor:number[];positions:Record<string,number[]>;camera:number[];target:number[];clipping:number;meshCount:number;stageVisible:boolean;sweptDisk:number[][]};
 const snapshot=(page:Page)=>page.evaluate(()=> (window as unknown as {turbineDiagnostics:()=>Snapshot}).turbineDiagnostics());
+const BASE=new URL(process.env.TEST_URL??'http://127.0.0.1:5173/windpowerweb3d/').pathname;
 test.beforeEach(async({page})=>{await page.addInitScript(()=>localStorage.setItem('darmk:windpowerweb3d:follow-gate:v1','granted'));});
-async function ready(page:Page){await page.goto('/');await expect(page.locator('.three-host')).toHaveAttribute('data-ready','true',{timeout:30000});}
+async function ready(page:Page){await page.goto(BASE);await expect(page.locator('.three-host')).toHaveAttribute('data-ready','true',{timeout:30000});}
 function log(phase:number,text:string){appendFileSync('docs/development-log.md',`\n\n## Phase ${phase} — 浏览器实际验证\n\n${text}\n`);}
 test('Phase 10: selection, focus, hide and isolate',async({page})=>{
  const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));await ready(page);
@@ -61,7 +62,7 @@ test('Phase 15/16: desktop/mobile visual QA and measured performance',async({pag
  log(15,'深蓝 UI 在 1600×1000 与 390×844 无横向溢出，移动端部件选择通过。截图 desktop.png / mobile.png。');log(16,`三 LOD 可加载；本机 Edge 无头浏览器 rAF 实测 ${perf} FPS（非跨设备性能保证）。螺栓合并为 InstancedMesh，详情见 performance.json。`);
 });
 test('Phase 17: failed GLB loading retains usable error and retry',async({page})=>{
- await page.route('**/models/*.glb',route=>route.abort());await page.goto('/');await expect(page.getByRole('heading',{name:'Model Load Failed'})).toBeVisible();await expect(page.getByRole('button',{name:'重新加载'})).toBeVisible();
+ await page.route('**/models/*.glb',route=>route.abort());await page.goto(BASE);await expect(page.getByRole('heading',{name:'Model Load Failed'})).toBeVisible();await expect(page.getByRole('button',{name:'重新加载'})).toBeVisible();
  await page.unroute('**/models/*.glb');await page.getByRole('button',{name:'重新加载'}).click();await expect(page.locator('.three-host')).toHaveAttribute('data-ready','true');log(17,'模拟 GLB 网络失败，界面保留错误与重试入口；解除故障后重新加载成功。');
 });
 test('model ray selection, auto orbit, reduced motion and no resource errors',async({page})=>{
