@@ -781,3 +781,42 @@ X/Y/Z 剖切平面和滑块实时更新通过，材质 clipping 与 X-Ray 切换
 ## Phase 8 — Blender 实际执行 / LOD0
 
 Blender 4.2.23 LTS 后台生成通过。367 mesh objects，94444 triangles。验证 errors=[]；参数配置 en182_config.json。 已导出 GLB。
+
+## Phase 10 — 浏览器实际验证
+
+部件树选择齿轮箱、相机飞行、隐藏/显示、单独查看均通过；console pageerror=[]。截图 gearbox.png。
+
+
+## Phase 11 — 浏览器实际验证
+
+GSAP 2 秒分层拆解、动画暂停/继续、位置精确复位通过。恢复后各语义组件 local position 与初始快照相同。
+
+
+## Phase 12 — 浏览器实际验证
+
+外壳 0.23 透明度、内部 PBR 显示通过，截图 transparent.png。
+
+
+## Phase 13 — 浏览器实际验证
+
+Fresnel X-Ray shader 在 Edge WebGL 实际编译和渲染通过，无 WebGL/JS 错误；截图 xray.png。
+
+
+## Phase 14 — 浏览器实际验证
+
+X/Y/Z 剖切平面和滑块实时更新通过，材质 clipping 与 X-Ray 切换无错误；截图 section.png。
+
+
+## Phase 15 — 浏览器实际验证
+
+深蓝 UI 在 1600×1000 与 390×844 无横向溢出，移动端部件选择通过。截图 desktop.png / mobile.png。
+
+
+## Phase 16 — 浏览器实际验证
+
+三 LOD 可加载；本机 Edge 无头浏览器 rAF 实测 56 FPS（非跨设备性能保证）。螺栓合并为 InstancedMesh，详情见 performance.json。
+
+
+## Phase 17 — 浏览器实际验证
+
+模拟 GLB 网络失败，界面保留错误与重试入口；解除故障后重新加载成功。
