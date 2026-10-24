@@ -54,7 +54,7 @@ test('Phase 15/16: desktop/mobile visual QA and measured performance',async({pag
  await ready(page);await page.waitForTimeout(1500);await page.screenshot({path:'docs/desktop.png'});
  const perf=await page.evaluate(async()=>{let frames=0;const start=performance.now();return await new Promise<number>(resolve=>{function step(){frames++;if(performance.now()-start>2000)resolve(Math.round(frames*1000/(performance.now()-start)));else requestAnimationFrame(step);}requestAnimationFrame(step);});});
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
- const mobile=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true,deviceScaleFactor:1});await ready(mobile);expect((await snapshot(mobile)).lod).toBe(2);
+ const mobile=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true,deviceScaleFactor:1});await mobile.addInitScript(()=>localStorage.setItem('darmk:windpowerweb3d:follow-gate:v1','granted'));await ready(mobile);expect((await snapshot(mobile)).lod).toBe(2);
  await mobile.screenshot({path:'docs/mobile.png'});expect(await mobile.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
  await mobile.getByRole('button',{name:'切换部件树'}).click();await mobile.locator('[data-component="blade_01"]').click();expect((await snapshot(mobile)).selected).toBe('blade_01');await mobile.close();
  const report={browser:'Edge headless, local machine',viewport:'1600x1000',measuredAnimationFramesPerSecond:perf,model:await snapshot(page),note:'Local measured browser frame rate; not a guarantee on other GPUs/devices.'};writeFileSync('docs/performance.json',JSON.stringify(report,null,2));

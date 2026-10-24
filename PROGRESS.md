@@ -1,0 +1,58 @@
+# 项目进度记录（PROGRESS）
+
+> 本文件由 ZCode 自动化开发过程维护，记录复现、验证、部署与扩展准备的全部进展。
+> 原项目：[darmk/wind-turbine-web3d](https://github.com/darmk/wind-turbine-web3d)（Apache-2.0）
+> 本项目路径：`D:\Projects\WindEnergyWeb3D`
+
+---
+
+## 当前状态总览
+
+| 阶段 | 状态 |
+|---|---|
+| 环境检查与仓库克隆 | ✅ 完成 |
+| 依赖安装（npm install） | ✅ 完成 |
+| 模型检查（check:model，三档 LOD） | ✅ 全部通过 |
+| 生产构建（vue-tsc + vite build） | ✅ 通过 |
+| Playwright 自动化测试（Edge 无头） | ✅ 10/10 通过（修复 1 处原测试遗漏） |
+| 浏览器视觉复核（桌面/移动/X-Ray/拆解） | ✅ 通过 |
+| 公网部署 | ⏳ 进行中（见下文） |
+| 扩展架构准备 | ⏳ 进行中 |
+| Blender 4.2 便携版 | ⏳ 下载中 |
+
+## 已完成工作
+
+### 1. 环境与获取（2026-10-24）
+- Node.js v24.11.1、npm 11.6.2、Git 2.52.0 满足项目要求（README 建议 Node 22.12+/24）。
+- D 盘存在且空间充足（约 136GB 空闲）；`D:\Projects`、`D:\Tools` 为新建目录，无同名冲突。
+- 已克隆原仓库至 `D:\Projects\WindEnergyWeb3D`（46 MB，含 Blender 源场景、Python 建模脚本、三档 Draco GLB、验证报告）。
+- `npm install` 成功（69 包），postinstall 已把 Three.js 本地 Draco 解码器复制到 `public/draco/`。
+- `npm audit` 报告 5 个高危漏洞，均为开发期问题（SSR XSS 不影响本纯客户端 SPA；vite dev server 相关）；补丁升级另行提交。
+
+### 2. 复现验证（2026-10-24）
+- `npm run dev` 正常启动；开发地址 `http://127.0.0.1:5173/windpowerweb3d/`（Vite dev 模式同样按 base 路径服务）。
+- 三档 GLB（458/363/237 KB）、Draco 解码器、二维码、背景图均通过 HTTP 200 正常加载。
+- `npm run check:model`：三档 LOD 全部通过 —— 24 语义部件、88 网格、9 材质；三角面 88,864 / 58,384 / 26,600 与 README 一致。
+- `npm run build`：vue-tsc 类型检查 + Vite 8 生产构建通过（three chunk 653 KB 提示属正常）。
+- Playwright（系统 Edge 无头，channel: msedge）：**10/10 通过**，覆盖选择/聚焦/隐藏/隔离、拆解暂停/继续/精确复位、透明/X-Ray/三轴剖切、叶轮启停/倍速、缩放/平移/环绕、PNG 截图下载、LOD 切换、移动端布局、GLB 加载失败重试、射线拾取、reduced-motion、无资源 404、舞台隔离与响应式取景。
+- 视觉复核截图（docs/）：desktop.png（84 FPS / 181 draws / 97.5K tris）、xray.png（机舱内部传动链）、exploded.png（完全拆解）、mobile.png（390×844 LOD 2）等均正常。
+
+### 3. 对原项目的修改（修复类）
+- `tests/viewer.spec.ts`：原项目最后一次提交加入了 FollowGate（关注引导页），但 Phase 15/16 测试内通过 `browser.newPage()` 新建的移动端页面未注入 localStorage，导致引导页拦截、该测试必失败。已补充与 `beforeEach` 一致的 `addInitScript`。这是测试遗漏修复，不改产品行为。
+- 后续安全补丁与架构改动见下方对应小节。
+
+## 已知问题与限制
+- ZCode 内嵌浏览器（IAB）在 WebGL 场景初始化时崩溃（标签页消失），属内嵌浏览器环境限制，与项目无关；权威验证使用 Playwright + 系统 Edge 完成。
+- Vite 构建提示 three chunk > 500 KB：功能正常，暂不做代码分割改动，保持原项目行为。
+- FollowGate（关注公众号引导）为原作者的展示性引导（前端固定二维码，不校验真实关注）。保留其功能与测试；部署时可按 `src/data/followGate.ts` 的 `enabled` 配置关闭（见 docs/DEPLOYMENT.md）。
+
+## 下一步任务
+1. 生产构建产物 `npm run preview` 复跑 Playwright（验证构建版本）。
+2. 依赖安全补丁升级（vue 3.5.44 / vite 8.3.5）并复跑全部测试。
+3. 公网部署（GitHub Pages / Cloudflare Pages），处理 base 路径与 Draco 资源路径。
+4. 扩展架构：模型注册表（model registry）与部件数据模块化，保持原功能不变。
+5. Blender 4.2 LTS 便携版安装至 `D:\Tools\Blender-4.2`，后台脚本验证。
+6. 文档完善：部署指南、模型接入流程、个人网站集成方案。
+
+## 需要用户处理的事项
+- （待部署时列出，如 GitHub 仓库创建授权 / Cloudflare 账号授权）
