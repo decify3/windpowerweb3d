@@ -20,7 +20,7 @@
 | GitHub 仓库 | ✅ https://github.com/decify3/windpowerweb3d |
 | CI/CD 自动部署 | ✅ 推送 main 自动构建发布（Actions） |
 | 扩展架构（模型注册表） | ✅ 完成，回归测试 10/10 |
-| Blender 4.2 便携版 | ⏳ 见下文 |
+| Blender 4.2 便携版 | ✅ D:\Tools\Blender-4.2，后台建模验证通过 |
 
 ## 公网部署（已完成）
 
@@ -77,5 +77,22 @@
 5. Blender 4.2 LTS 便携版安装至 `D:\Tools\Blender-4.2`，后台脚本验证。
 6. 文档完善：部署指南、模型接入流程、个人网站集成方案。
 
+## Blender 4.2 便携版（已完成，2026-10-25）
+
+- 安装位置：`D:\Tools\Blender-4.2\blender.exe`（4.2.23 LTS 便携版，官方 TUNA 镜像下载，无系统级安装）
+- 官方 download.blender.org 在本机被 Cloudflare 拦截，改用清华镜像成功
+- 后台建模端到端验证通过（输出到临时目录，未覆盖原模型）：
+  `D:\Tools\Blender-4.2\blender.exe --background --factory-startup --python-exit-code 1 --python blender/scripts/build_turbine.py -- --phase 8 --lod 0 --output-dir <临时目录>`
+- 结果：BUILD_PASSED，88 独立网格、94444 三角面（实例化前），轮毂高度 130.0 m、
+  叶片角度 [0/120/240]°、实测扫掠直径 181.100 m，与参数配置一致；Draco 导出正常
+- 临时产物已清理，`public/models/` 原模型未变动
+
 ## 需要用户处理的事项
-- （待部署时列出，如 GitHub 仓库创建授权 / Cloudflare 账号授权）
+
+- **无阻塞事项**。部署、验证、文档均已完成。
+- 可选项（按需处理）：
+  1. FollowGate（关注公众号引导页）当前保留原作者配置（`src/data/followGate.ts` 中 `enabled: true`）。部署为你自己的站点时可改为 `false` 并重新构建。
+  2. 如需 Cloudflare Pages（根路径部署形态），按 `docs/DEPLOYMENT.md` 方式二操作，需要你的 Cloudflare 账号授权。
+  3. git 的 github.com 代理配置：`git config --global http.https://github.com/.proxy http://127.0.0.1:7897`（跟随系统代理端口变化时需同步修改；撤销命令见上表下方）。
+  4. GitHub 仓库当前为 Public（免费 Pages 的要求）；如需私有化，Pages 需升级 GitHub Pro。
+  5. 个人网站集成（独立链接 / 子路径 / iframe 三方案）见 `docs/DEPLOYMENT.md`，均无需改动本项目代码。

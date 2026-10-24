@@ -776,3 +776,8 @@ X/Y/Z 剖切平面和滑块实时更新通过，材质 clipping 与 X-Ray 切换
 ## Phase 17 — 浏览器实际验证
 
 模拟 GLB 网络失败，界面保留错误与重试入口；解除故障后重新加载成功。
+
+
+## Phase 8 — Blender 实际执行 / LOD0
+
+Blender 4.2.23 LTS 后台生成通过。367 mesh objects，94444 triangles。验证 errors=[]；参数配置 en182_config.json。 已导出 GLB。

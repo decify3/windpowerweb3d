@@ -1,5 +1,14 @@
 # 把一台 5 MW 风机做成可拆解的网页 3D 数字样机
 
+> **关于本项目（派生声明）**：本项目基于 [darmk/wind-turbine-web3d](https://github.com/darmk/wind-turbine-web3d)
+> （Apache License 2.0）完整复现并扩展，原作者的建模、代码与文档成果归属原作者；
+> 三维模型与原始实现并非本仓库贡献者从零独立完成。后续修改（部署自动化、
+> 依赖安全升级、模型注册表扩展架构、测试修复等）记录于 [PROGRESS.md](PROGRESS.md)，
+> 架构说明见 [docs/EXTENDING.md](docs/EXTENDING.md)，部署方案见 [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)。
+>
+> - 原项目在线演示：https://demo.darmk.com.cn/windpowerweb3d/
+> - 本仓库在线演示：https://decify3.github.io/windpowerweb3d/
+
 这不是一张 AI 效果图，也不是一份可用于制造的原厂 CAD。
 
 本项目以公开资料为边界，将一台叶轮直径 **181.1 m**、轮毂高度 **130 m** 的 5 MW 风力发电机，制作成可在浏览器中旋转、选择、拆解、透视和剖切的 Web3D 数字样机。最终交付包括可编辑的 Blender 源场景、三档 Draco 压缩 GLB，以及一个无需安装三维软件即可运行的静态网页。
@@ -128,7 +137,8 @@ npm run preview
 需要 Blender 4.2 LTS（或兼容版本）。以下命令在后台独立运行，不会修改已打开的 Blender 会话：
 
 ```powershell
-$blender = 'D:\Program Files\Blender Foundation\Blender 4.2\blender.exe'
+# 本仓库维护者使用便携版：D:\Tools\Blender-4.2\blender.exe（按实际路径调整）
+$blender = 'D:\Tools\Blender-4.2\blender.exe'
 & $blender --background --factory-startup --python-exit-code 1 --python blender/scripts/build_turbine.py -- --phase 8 --lod 0
 & $blender --background --factory-startup --python-exit-code 1 --python blender/scripts/build_turbine.py -- --phase 8 --lod 1
 & $blender --background --factory-startup --python-exit-code 1 --python blender/scripts/build_turbine.py -- --phase 8 --lod 2
