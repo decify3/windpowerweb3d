@@ -91,7 +91,7 @@
 
 - **无阻塞事项**。部署、验证、文档均已完成。
 - 可选项（按需处理）：
-  1. FollowGate（关注公众号引导页）当前保留原作者配置（`src/data/followGate.ts` 中 `enabled: true`）。部署为你自己的站点时可改为 `false` 并重新构建。
+  1. ~~FollowGate 引导页~~ → **已按用户要求关闭**（`src/data/followGate.ts` 中 `enabled: false`，2026-10-25）。组件与测试保留，恢复原行为改回 `true` 即可。原作者归属保留于 README 派生声明与 LICENSE。
   2. 如需 Cloudflare Pages（根路径部署形态），按 `docs/DEPLOYMENT.md` 方式二操作，需要你的 Cloudflare 账号授权。
   3. git 的 github.com 代理配置：`git config --global http.https://github.com/.proxy http://127.0.0.1:7897`（跟随系统代理端口变化时需同步修改；撤销命令见上表下方）。
   4. GitHub 仓库当前为 Public（免费 Pages 的要求）；如需私有化，Pages 需升级 GitHub Pro。

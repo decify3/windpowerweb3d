@@ -5,7 +5,9 @@
  * follow action. The browser only remembers that the visitor chose to enter.
  */
 export const followGateConfig = {
-  enabled: true,
+  // 本仓库派生部署默认关闭引导页（原作者归属见 README 派生声明与 LICENSE）。
+  // 需要恢复原项目行为时改为 true 即可，组件与测试均保留。
+  enabled: false,
   storageKey: 'darmk:windpowerweb3d:follow-gate:v1',
   accountName: '程途漫记',
   eyebrow: '关注公众号 · 解锁完整体验',

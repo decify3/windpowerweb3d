@@ -1,10 +1,13 @@
 import { expect, test } from '@playwright/test';
+import { followGateConfig } from '../src/data/followGate';
 
 // App base path derived from the test target URL so the suite works for any
 // deployment base (e.g. /windpowerweb3d/ or the site root).
 const BASE = new URL(process.env.TEST_URL ?? 'http://127.0.0.1:5173/windpowerweb3d/').pathname;
 
 test('公众号引导页展示固定二维码，并在确认后进入三维应用', async ({ page }) => {
+  // 引导页展示与确认流程仅在配置启用时执行（派生部署默认关闭）。
+  test.skip(!followGateConfig.enabled, '引导页已在 followGateConfig 中关闭，跳过展示流程测试');
   await page.goto(BASE);
 
   await expect(page.getByRole('heading', { name: '先关注，再探索风机' })).toBeVisible();
